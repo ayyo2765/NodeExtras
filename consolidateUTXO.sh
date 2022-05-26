@@ -29,8 +29,11 @@ t=400		#maximum utxos per consolidation transaction
 #Outputs vByte,
 #Overhead vByte
 coins=(
+	"P2WPKH,.0001,68,31,11"			# Generic P2WPKH transaction type coin. Use -f to override defualt fee
+	"P2PKH,.0001,148,34,10"			# Generic P2PKH transaction type coin. Use -f to override defualt fee
 	"dynamo,.00001,68,31,11"
 	"martkist,.0001,148,34,10"
+	"sprint,.00001,148,34,10"
 )
 
 ############################################Config_End############################################
@@ -39,8 +42,11 @@ usage(){
 	printf "\n"
 	printf "Usage: consolidateUTXO.sh [-a -u -p] [-C | -c -f] [options]\n"
 	printf " -C \tCoins with predefined vByte size and min fee \tEx. -C dynamo\n"
-	printf "\t dynamo\n"
-	printf "\t martkist\n"
+	printf "\t  dynamo\n"
+	printf "\t  martkist\n"
+	printf "\t  sprint\n"
+	printf "\t  P2WPKH   Generic P2WPKH transaction type coin. Use -f to override default fee\n"
+	printf "\t  P2PKH    Generic P2PKH transaction type coin. Use -f to override default fee\n"
 	printf " -c \tCustom coin vByte size. \tEx. -c 68,31,11 (inputs,outputs,overhead)\n"
 	printf " -f \tFee amount per kB. \tEx. -f .00001\n"
 	printf " -a \tRPC address. \tEx. -a 127.0.0.1:6433\n"
@@ -55,9 +61,14 @@ usage(){
 	printf "\n"
 	printf "Examples:\n"
 	printf "\n"
-	printf "./consolidateUTXO.sh -u user -p password -a 127.0.0.1:8433 -C dynamo -l 2 \t\tConsolidate up to 400 dynamo UTXOs containing less than 2 coins into a single UTXO per transaction\n"
-	printf "./consolidateUTXO.sh -u user -p password -a 127.0.0.1:4041 -C martkist -t 100 \t\tConsolidate up to 100 martkist UTXOs containing less than 1 coin into a single UTXO per transaction\n"
-	printf "./consolidateUTXO.sh -u user -p password -a 127.0.0.1:4041 -c 148,34,10 -f .0001 \tConsolidate up to 400 UTXOs containing less than 1 coin into a single UTXO per transaction with a custom vByte size and fee\n"
+	printf "./consolidateUTXO.sh -u user -p password -a 127.0.0.1:8433 -C dynamo -l 2\n"
+	printf "  ^ Consolidate up to 400 dynamo UTXOs, containing less than 2 coins, into a single UTXO per transaction\n"
+	printf "\n"
+	printf "./consolidateUTXO.sh -u user -p password -a 127.0.0.1:4041 -C martkist -t 100 -L 18000\n"
+	printf "  ^ Consolidate up to 100 martkist UTXOs, containing less than 1 coin, into a single UTXO per transaction, from each wallet address with less than 18000 coins\n"
+	printf "\n"
+	printf "./consolidateUTXO.sh -u user -p password -a 127.0.0.1:4041 -c 148,34,10 -f .0001\n"
+	printf "  ^ Consolidate up to 400 UTXOs, containing less than 1 coin, into a single UTXO per transaction with a custom vByte size and .0001 fee\n"
 	printf "\n"
 	exit ${1:-0}
 }
